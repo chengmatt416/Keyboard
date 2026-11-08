@@ -778,12 +778,16 @@ def main():
         asm.add(pcb, name="side_screen_pcb", color=col["pcb"])
         asm.add(b_pcb.fuse(b_parts), name="esp32s3_board", color=col["pcb"])
         asm.add(env_encoder(), name="ec11", color=col["part"])
+        # switches / keycaps / knob are added as shared instances so the STEP stays small
         sw = switch_solid()
         caps = {u: keycap_solid(u) for u in sorted({k["u"] for k in KEYS})}
         for i, k in enumerate(KEYS):
-            asm.add(to_world(sw.translate(cq.Vector(k["x"], k["v"], 0))), name=f"switch_{i:02d}", color=cq.Color(0.2, 0.4, 0.8))
-            asm.add(to_world(caps[k["u"]].translate(cq.Vector(k["x"], k["v"], KC["skirt_above_plate"]))), name=f"keycap_{i:02d}", color=col["part"])
-        asm.add(to_world(knob_solid().translate(cq.Vector(*ENC["center"], BEZ + 0.8))), name="knob", color=col["part"])
+            asm.add(sw, name=f"switch_{i:02d}", color=cq.Color(0.2, 0.4, 0.8),
+                    loc=cq.Location(cq.Vector(*l2w(k["x"], k["v"], 0)), cq.Vector(1, 0, 0), TILT))
+            asm.add(caps[k["u"]], name=f"keycap_{i:02d}", color=col["part"],
+                    loc=cq.Location(cq.Vector(*l2w(k["x"], k["v"], KC["skirt_above_plate"])), cq.Vector(1, 0, 0), TILT))
+        asm.add(knob_solid(), name="knob", color=col["part"],
+                loc=cq.Location(cq.Vector(*l2w(*ENC["center"], BEZ + 0.8)), cq.Vector(1, 0, 0), TILT))
         asm.save(str(OUT / "step" / "STRIP84_assembly.step"))
 
     print("done, fails =", fails)

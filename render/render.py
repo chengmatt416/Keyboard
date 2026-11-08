@@ -207,7 +207,7 @@ def L(x, v, w):
 
 
 # --------------------------------------------------------------------------- scene
-def build_scene(M, explode=False):
+def build_scene(M, explode=False, cable=False):
     E = (lambda dz: Matrix.Translation((0, 0, dz))) if explode else (lambda dz: Matrix.Identity(4))
     ex = {"caps": 105, "switch": 58, "knob": 78, "glass": 40, "screen": -34, "enc": -30, "ret": -46, "cas": -38,
           "mcp": -60, "mcu": -62, "bottom": -88} if explode else {}
@@ -254,8 +254,8 @@ def build_scene(M, explode=False):
         instance(cap_src[u], f"cap_{lab}", mtx, mat)
         body = LEGEND.get(lab, lab)
         if body:
-            size = 3.4 if len(body) == 1 else (2.4 if len(body) <= 3 else 1.9)
-            tz = KC["height"] - KC["dish"] - 0.012
+            size = 4.2 if len(body) == 1 else (3.1 if len(body) <= 3 else 2.4)
+            tz = KC["height"] - KC["dish"] + 0.04
             text_obj(f"leg_{lab}", body, size, legm, E(g("caps")) @ L(k["x"], k["v"] + 0.3, KC["skirt_above_plate"] + tz))
         instance(sw_src, f"sw_{lab}", E(g("switch")) @ L(k["x"], k["v"], 0))
         instance(stem_src, f"stem_{lab}", E(g("switch")) @ L(k["x"], k["v"], 0))
@@ -280,6 +280,23 @@ def build_scene(M, explode=False):
     mask.matrix_basis = E(g("screen")) @ L(sc["center"][0], sc["center"][1], ptop - 0.01)
     disp = rrect_prism("screen_disp", aw, ah, 2.6, 0.2, M["screen"])
     disp.matrix_basis = E(g("screen")) @ L(sc["center"][0], sc["center"][1], ptop)
+
+    if cable:   # USB-C cable plugged into the native port
+        ux, uz = PL["usb"]
+        y0 = PL["depth"] - 0.6
+        plug = rrect_prism("usb_overmold", 12.2, 6.6, 2.4, 22.0, M["rubber"])
+        plug.matrix_basis = Matrix.Translation((ux, y0, uz)) @ Matrix.Rotation(math.radians(90), 4, "X") @ Matrix.Translation((0, 0, 0))
+        shell = rrect_prism("usb_shell", 8.3, 2.5, 1.1, 6.0, M["chip"])
+        shell.matrix_basis = Matrix.Translation((ux, y0 - 6.0, uz)) @ Matrix.Rotation(math.radians(90), 4, "X")
+        bpy.ops.mesh.primitive_cylinder_add(radius=2.0, depth=180, vertices=48)
+        cb = bpy.context.object
+        cb.data.materials.append(M["rubber"])
+        for p_ in cb.data.polygons:
+            p_.use_smooth = True
+        cb.parent = root()
+        ang = math.atan2(uz - 2.0, 180)
+        cb.matrix_basis = (Matrix.Translation((ux, y0 + 22.0, uz)) @ Matrix.Rotation(-ang, 4, "X")
+                           @ Matrix.Translation((0, 90, 0)) @ Matrix.Rotation(math.radians(90), 4, "X"))
     return objs
 
 
@@ -391,9 +408,9 @@ CENTER = Vector((0.183, 0.0855, 0.018))
 VIEWS = {
     # name: (camera kwargs, lights, resolution)
     "hero": dict(cam=dict(loc=(0.183 - 0.30, 0.0855 - 0.47, 0.30), target=(0.176, 0.090, 0.006), lens=62, fstop=32), res=(2400, 1500), expo=0.0),
-    "top": dict(cam=dict(loc=(0.183, 0.0855, 1.2), target=(0.183, 0.0855, 0.0), ortho=0.405), res=(2400, 1320), expo=0.15),
-    "side": dict(cam=dict(loc=(0.183 + 1.0, 0.0855, 0.030), target=(0.183, 0.0855, 0.030), ortho=0.205), res=(2400, 820), expo=0.25),
-    "rear": dict(cam=dict(loc=(0.183 + 0.36, 0.0855 + 0.46, 0.22), target=(0.170, 0.10, 0.010), lens=62, fstop=32), res=(2400, 1500), expo=0.1),
+    "top": dict(cam=dict(loc=(0.183, 0.0855, 1.2), target=(0.183, 0.0855, 0.0), ortho=0.405), res=(2400, 1320), expo=-0.15),
+    "side": dict(cam=dict(loc=(0.183 + 1.0, 0.0855, 0.030), target=(0.183, 0.0855, 0.030), ortho=0.205), res=(2400, 820), expo=0.45),
+    "rear": dict(cam=dict(loc=(-0.13, 0.171 + 0.29, 0.095), target=(0.075, 0.150, 0.012), lens=70, fstop=9), res=(2400, 1500), expo=0.1),
     "detail": dict(cam=dict(loc=(0.028 + 0.14, 0.11 - 0.17, 0.165), target=(0.040, 0.118, 0.022), lens=85, fstop=8), res=(2400, 1600), expo=0.1),
     "exploded": dict(cam=dict(loc=(0.183 - 0.42, 0.0855 - 0.62, 0.48), target=(0.183, 0.090, 0.018), lens=55, fstop=32), res=(2400, 1800), expo=0.05),
 }
@@ -409,7 +426,8 @@ def lights_for(view):
     area("key", (c.x - 0.55, c.y - 0.35, c.z + 0.75), c, 1.0, 16, size_y=0.6)
     area("fill", (c.x + 0.75, c.y - 0.3, c.z + 0.35), c, 1.2, 4.5)
     area("rim", (c.x - 0.1, c.y + 0.75, c.z + 0.40), c, 1.4, 11, size_y=0.25)
-    area("top", (c.x, c.y, c.z + 1.0), c, 0.9, 5)
+    if view != "top":
+        area("top", (c.x, c.y, c.z + 1.0), c, 0.9, 5)
 
 
 def main():
@@ -428,7 +446,7 @@ def main():
         ROOTOBJ = None
         FONT_DATA = bpy.data.fonts.load(FONT)
         M = build_materials(a.colorway)
-        build_scene(M, explode=(view == "exploded"))
+        build_scene(M, explode=(view == "exploded"), cable=(view == "rear"))
         studio(M, floor_z=-0.090 if view == "exploded" else 0.0)
         lights_for(view)
         v = VIEWS[view]
