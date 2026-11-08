@@ -1,0 +1,164 @@
+{
+  "_about": "STRIP/84 v0.4 parametric source. All lengths in mm. Values marked verify must be measured on the purchased part before ordering the print. build_case.py and render.py read this file.",
+  "rev": "0.4",
+  "date": "2026-11-08",
+
+  "frame": {
+    "_coords": "World: X left->right, Y front->rear, Z up from the desk. Local plate frame: x = X, v along the plate from the front key-grid edge toward the rear, w normal to the plate (w=0 is the plate top).",
+    "width": 366.0,
+    "depth": 171.0,
+    "corner_r": 7.0,
+    "tilt_deg": 2.5,
+    "grid_front_y": 12.5,
+    "plate_top_z_at_grid_front": 15.5,
+    "bezel_above_plate": 6.0,
+    "wall": 3.0,
+    "skin": 2.0,
+    "deck_skin": 3.0,
+    "top_edge_round": 1.0,
+    "bottom_chamfer": 2.5,
+    "case_bottom_z": 1.5,
+    "bottom_plate_t": 2.5,
+    "bottom_plate_gap": 0.2,
+    "rabbet": 1.5
+  },
+
+  "keys": {
+    "pitch": 19.05,
+    "grid_x0": 53.0,
+    "opening_margin": 1.25,
+    "opening_r": 1.5,
+    "lip_t": 2.0,
+    "rows": [
+      [["Esc",1],["F1",1],["F2",1],["F3",1],["F4",1],["F5",1],["F6",1],["F7",1],["F8",1],["F9",1],["F10",1],["F11",1],["F12",1],["PrtSc",1],["Ins",1],["Pause",1]],
+      [["`",1],["1",1],["2",1],["3",1],["4",1],["5",1],["6",1],["7",1],["8",1],["9",1],["0",1],["-",1],["=",1],["Backspace",2],["Del",1]],
+      [["Tab",1.5],["Q",1],["W",1],["E",1],["R",1],["T",1],["Y",1],["U",1],["I",1],["O",1],["P",1],["[",1],["]",1],["\\",1.5],["PgUp",1]],
+      [["Caps",1.75],["A",1],["S",1],["D",1],["F",1],["G",1],["H",1],["J",1],["K",1],["L",1],[";",1],["'",1],["Enter",2.25],["PgDn",1]],
+      [["Shift",2.25],["Z",1],["X",1],["C",1],["V",1],["B",1],["N",1],["M",1],[",",1],[".",1],["/",1],["RShift",1.75],["Up",1],["End",1]],
+      [["Ctrl",1.25],["Win",1.25],["Alt",1.25],["Space",6.25],["RAlt",1],["Fn",1],["RCtrl",1],["Left",1],["Down",1],["Right",1]]
+    ],
+    "matrix": [
+      ["Esc","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11"],
+      ["F12","PrtSc","Ins","Pause","`","1","2","3","4","5","6","7"],
+      ["8","9","0","-","=","Backspace","Del","Tab","Q","W","E","R"],
+      ["T","Y","U","I","O","P","[","]","\\","PgUp","Caps","A"],
+      ["S","D","F","G","H","J","K","L",";","'","Enter","PgDn"],
+      ["Shift","Z","X","C","V","B","N","M",",",".","/","RShift"],
+      ["Up","End","Ctrl","Win","Alt","Space","RAlt","Fn","RCtrl","Left","Down","Right"]
+    ]
+  },
+
+  "mx_switch": {
+    "_src": "Cherry MX datasheet / ai03 plate generator: 14.00 square cutout, 1.5 plate. Housing 5.0 below plate top, pins 3.3 further.",
+    "cutout": 14.0,
+    "cutout_r": 0.3,
+    "plate_skin": 1.5,
+    "plate_total": 5.0,
+    "relief_x": 15.0,
+    "relief_v": 16.4,
+    "below_plate_housing": 5.0,
+    "pin_len": 3.3,
+    "wiring_allowance": 2.0,
+    "above_plate_housing": 6.6,
+    "above_plate_stem": 11.6,
+    "travel": 4.0
+  },
+
+  "stabilizer": {
+    "_src": "ai03 plate generator, mx-simple: 6.75 wide, from 8.0 toward the front to 6.0 toward the rear of the switch centre; spacing +-11.938 for 2u-2.75u, +-50 for 6.25u. Cherry-style plate-mount stabilisers.",
+    "w": 6.75,
+    "front": 8.0,
+    "rear": 6.0,
+    "r": 0.5,
+    "spacing": {"2": 11.938, "2.25": 11.938, "6.25": 50.0},
+    "relief_w": 9.0,
+    "relief_front": 9.5,
+    "relief_rear": 7.0,
+    "wire_channel": [4.0, 9.5],
+    "housing_below_plate": 6.5
+  },
+
+  "keycap": {
+    "_note": "Render envelope for an aluminium uniform-profile keycap. Metal keycap sets vary: check that the set lists 75% / 1.75u right Shift / 6.25u space / 2.25u Enter and left Shift / 2u Backspace.",
+    "gap": 1.05,
+    "depth_bottom": 18.0,
+    "top_inset_w": 4.6,
+    "depth_top": 13.6,
+    "height": 8.0,
+    "skirt_above_plate": 6.9,
+    "dish": 0.45
+  },
+
+  "touchbar": {
+    "_status": "PANEL NOT SELECTED. Glass and LCD values are the 349 x 22 active-area target. The cassette is a separate printed part so only it and the glass pocket need to change once a real panel is chosen.",
+    "active": [349.0, 22.0],
+    "glass": [357.0, 30.0, 1.1],
+    "glass_clear": 0.2,
+    "glass_r": 2.0,
+    "lcd": [351.0, 26.0, 2.6],
+    "foam": 0.5,
+    "center_x": 183.0,
+    "center_v": 139.3,
+    "ledge": 2.0,
+    "cassette_t": 1.8,
+    "fpc_slot": [40.0, 6.0],
+    "verify": true
+  },
+
+  "side_screen": {
+    "_src": "1.69 in ST7789V2 240x280 IPS panel: outline 30.07 x 37.43 x 1.56, active 27.97 x 32.63. Module PCB size differs by seller.",
+    "panel": [30.07, 37.43, 1.56],
+    "active": [27.97, 32.63],
+    "active_offset_v": 0.0,
+    "window_r": 3.0,
+    "recess": 1.0,
+    "module_pcb": [33.0, 42.0, 1.6],
+    "center": [28.0, 91.0],
+    "verify": true
+  },
+
+  "encoder": {
+    "_src": "Alps EC11 family: 7 mm M7x0.75 bushing, ~12 x 12 body. Use 20 mm shaft, D or knurled.",
+    "hole": 7.4,
+    "body": [12.4, 13.4, 6.5],
+    "pins": 5.0,
+    "center": [28.0, 34.0],
+    "knob": [24.0, 13.0]
+  },
+
+  "mcu_board": {
+    "_src": "YD-ESP32-S3 N16R8 (VCC-GND) 63.5 x 28 mm, two USB-C on the short edge. Native USB port position verify.",
+    "size": [28.0, 63.5, 1.6],
+    "center_x": 28.0,
+    "usb_offset_x": -7.0,
+    "usb_receptacle": [8.94, 7.35, 3.26],
+    "board_bottom_z": 9.0,
+    "rear_gap": 0.4,
+    "verify": true
+  },
+
+  "usb_port": {
+    "hole": [13.0, 7.5, 3.2],
+    "wall_left": 1.2,
+    "pocket": [34.0, 12.0], "_pocket": "inner thinning of the rear wall, centred on the MCU board so the board edge can sit 0.4 mm from the 1.2 mm skin"
+  },
+
+  "screws": {
+    "insert_hole": 4.0,
+    "insert_depth": 6.0,
+    "boss_d": 7.0,
+    "clear_hole": 3.4,
+    "csk_d": 6.6,
+    "m2_pilot": 1.7,
+    "m2_boss_d": 5.0,
+    "bottom_xy_world": [[40,6.3],[120,6.3],[183,6.3],[246,6.3],[326,6.3]],
+    "bottom_xv_local": [[80,121.0],[183,121.0],[286,121.0],[12,62.0],[44,10.0],[82.8,47.625],[159,9.525],[209,9.525],[316.1,28.575]],
+    "cassette_front_xv": [[30,121.0],[131,121.0],[235,121.0],[336,121.0]],
+    "cassette_rear_xv": [[40,155.2],[183,155.2],[326,155.2]],
+    "retainer_xv": [[28.0,66.0],[28.0,116.0]]
+  },
+
+  "feet": {"d": 13.0, "recess": 1.5, "xy": [[22,18],[344,18],[22,153],[344,153]], "_part": "12.7 x 3.5 mm 3M Bumpon or similar, 1.5 mm proud"},
+
+  "fdm_split": {"_note": "Top case is cut along key boundaries (stepped seam) nearest top_target_x so no switch is split.", "top_target_x": 186.0, "bottom_x": 150.0, "cassette_x": 183.0}
+}

@@ -1,0 +1,4 @@
+cad/out/render/
+__pycache__/
+*.blend1
+render/tex/
