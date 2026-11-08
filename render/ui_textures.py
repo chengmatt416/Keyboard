@@ -72,13 +72,13 @@ def touchbar(ppm=10):
     ax1, ay1 = ax0 + int(aw * ppm), ay0 + int(ah * ppm)
     d = ImageDraw.Draw(img)
     d.rectangle([ax0, ay0, ax1, ay1], fill=BG)
-    pad = int(2.0 * ppm)
+    pad = int(1.6 * ppm)
     y0, y1 = ay0 + pad, ay1 - pad
     hh = y1 - y0
     x = ax0 + pad
     f_lab = font(int(3.0 * ppm), "SemiBold")
     f_small = font(int(2.3 * ppm), "Medium")
-    f_big = font(int(4.6 * ppm), "SemiBold")
+    f_big = font(int(4.2 * ppm), "SemiBold")
 
     # left: device/target pill
     pw = int(30 * ppm)

@@ -523,7 +523,8 @@ def env_usb_plug():
 
 
 def env_mcp_board():
-    return rrect_solid(105, 152.0, 80, 26, FLOOR + 4, FLOOR + 5.6, 1.0), rrect_solid(105, 152.0, 76, 20, FLOOR + 5.6, FLOOR + 5.6 + 8.0, 0.5)
+    yc = DEP - F["wall"] - 1.0 - 12.0
+    return rrect_solid(234.5, yc, 80, 24, FLOOR + 4, FLOOR + 5.6, 1.0), rrect_solid(234.5, yc, 76, 20, FLOOR + 5.6, FLOOR + 5.6 + 8.0, 0.5)
 
 
 # --------------------------------------------------------------------------- fit report
@@ -570,7 +571,7 @@ def fit_checks(top, bottom, cassette, sled, retainer):
     chk("USB-C plug shell vs rear wall", shell, top, "mated 6.0 mm")
     chk("USB-C plug overmold (12.2 × 6.6) vs rear wall", over, top)
     m_pcb, m_parts = env_mcp_board()
-    chk("MCP23017 perfboard (80 × 26, DIP sockets) vs case", m_pcb.fuse(m_parts), case, "free bay under the touch bar")
+    chk("MCP23017 perfboard (80 × 24, DIP sockets) vs case", m_pcb.fuse(m_parts), case, "free bay under the touch bar")
     chk("MCP perfboard vs cassette", m_pcb.fuse(m_parts), cassette)
 
     # numeric clearances

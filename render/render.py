@@ -407,17 +407,17 @@ def setup_render(samples, w, h):
     sc.render.threads_mode = "AUTO"
 
 
-CENTER = Vector((0.183, 0.0855, 0.018))
+CENTER = Vector((0.183, 0.0795, 0.018))
 
 
 VIEWS = {
     # name: (camera kwargs, lights, resolution)
-    "hero": dict(cam=dict(loc=(0.183 - 0.30, 0.0855 - 0.47, 0.30), target=(0.176, 0.090, 0.006), lens=62, fstop=32), res=(2400, 1500), expo=0.0),
-    "top": dict(cam=dict(loc=(0.183, 0.0855, 1.2), target=(0.183, 0.0855, 0.0), ortho=0.405), res=(2400, 1320), expo=-0.15),
-    "side": dict(cam=dict(loc=(0.183 + 1.0, 0.0855, 0.030), target=(0.183, 0.0855, 0.030), ortho=0.205), res=(2400, 820), expo=0.45),
-    "rear": dict(cam=dict(loc=(-0.13, 0.171 + 0.29, 0.095), target=(0.075, 0.150, 0.012), lens=70, fstop=9), res=(2400, 1500), expo=0.1),
+    "hero": dict(cam=dict(loc=(0.183 - 0.30, 0.0795 - 0.47, 0.30), target=(0.176, 0.084, 0.006), lens=62, fstop=32), res=(2400, 1500), expo=0.0),
+    "top": dict(cam=dict(loc=(0.183, 0.0795, 1.2), target=(0.183, 0.0795, 0.0), ortho=0.405), res=(2400, 1320), expo=-0.15),
+    "side": dict(cam=dict(loc=(0.183 + 1.0, 0.0795, 0.030), target=(0.183, 0.0795, 0.030), ortho=0.205), res=(2400, 820), expo=0.45),
+    "rear": dict(cam=dict(loc=(-0.13, 0.159 + 0.29, 0.095), target=(0.075, 0.138, 0.012), lens=70, fstop=9), res=(2400, 1500), expo=0.1),
     "detail": dict(cam=dict(loc=(0.036 - 0.07, 0.072 - 0.215, 0.235), target=(0.040, 0.074, 0.018), lens=72, fstop=11), res=(2400, 1600), expo=0.1),
-    "exploded": dict(cam=dict(loc=(0.183 - 0.42, 0.0855 - 0.62, 0.48), target=(0.183, 0.090, 0.018), lens=55, fstop=32), res=(2400, 1800), expo=0.05),
+    "exploded": dict(cam=dict(loc=(0.183 - 0.42, 0.0795 - 0.62, 0.48), target=(0.183, 0.084, 0.018), lens=55, fstop=32), res=(2400, 1800), expo=0.05),
 }
 
 

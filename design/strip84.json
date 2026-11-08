@@ -6,7 +6,7 @@
   "frame": {
     "_coords": "World: X left->right, Y front->rear, Z up from the desk. Local plate frame: x = X, v along the plate from the front key-grid edge toward the rear, w normal to the plate (w=0 is the plate top).",
     "width": 366.0,
-    "depth": 171.0,
+    "depth": 159.0,
     "corner_r": 7.0,
     "tilt_deg": 2.5,
     "grid_front_y": 12.5,
@@ -90,16 +90,16 @@
   },
 
   "touchbar": {
-    "_status": "PANEL NOT SELECTED. Glass and LCD values are the 349 x 22 active-area target. The cassette is a separate printed part so only it and the glass pocket need to change once a real panel is chosen.",
-    "active": [349.0, 22.0],
-    "glass": [357.0, 30.0, 1.1],
+    "_status": "PANEL NOT SELECTED. v0.4b: slimmer strip, 349 x 12 active area on an 18 mm cover glass (was 349 x 22 / 30). The cassette is a separate printed part so only it and the glass pocket need to change once a real panel is chosen.",
+    "active": [349.0, 12.0],
+    "glass": [357.0, 18.0, 1.1],
     "glass_clear": 0.2,
     "glass_r": 2.0,
-    "lcd": [351.0, 26.0, 2.6],
+    "lcd": [351.0, 14.0, 2.6],
     "foam": 0.5,
     "center_x": 183.0,
-    "center_v": 139.3,
-    "ledge": 2.0,
+    "center_v": 133.3,
+    "ledge": 1.5,
     "cassette_t": 1.8,
     "fpc_slot": [40.0, 6.0],
     "verify": true
@@ -167,11 +167,11 @@
     "bottom_xy_world": [[40,6.3],[120,6.3],[183,6.3],[246,6.3],[326,6.3]],
     "bottom_xv_local": [[80,121.0],[183,121.0],[286,121.0],[6.0,24.0],[6.0,70.5],[28.0,13.0],[82.8,47.625],[159,9.525],[209,9.525],[316.1,28.575]],
     "cassette_front_xv": [[30,121.0],[131,121.0],[235,121.0],[336,121.0]],
-    "cassette_rear_xv": [[40,155.2],[183,155.2],[326,155.2]],
+    "cassette_rear_xv": [[40,143.2],[183,143.2],[326,143.2]],
     "retainer_xv": [[7.0,91.0],[47.5,91.0]]
   },
 
-  "feet": {"d": 13.0, "recess": 1.5, "xy": [[22,18],[344,18],[22,153],[344,153]], "_part": "12.7 x 3.5 mm 3M Bumpon or similar, 1.5 mm proud"},
+  "feet": {"d": 13.0, "recess": 1.5, "xy": [[22,18],[344,18],[22,141],[344,141]], "_part": "12.7 x 3.5 mm 3M Bumpon or similar, 1.5 mm proud"},
 
   "fdm_split": {"_note": "Top case is cut along key boundaries (stepped seam) nearest top_target_x so no switch is split.", "top_target_x": 186.0, "bottom_x": 150.0, "cassette_x": 183.0}
 }
