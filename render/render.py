@@ -18,7 +18,7 @@ MESH = ROOT / "cad" / "out" / "render"
 TEX = ROOT / "render" / "tex"
 OUT = ROOT / "renders"
 PL = json.loads((MESH / "placements.json").read_text(encoding="utf-8"))
-FONT = "/usr/share/fonts/opentype/inter/Inter-Medium.otf"
+FONT = "/usr/share/fonts/opentype/inter/Inter-SemiBold.otf"
 
 TILT = math.radians(PL["tilt_deg"])
 LOCAL = Matrix.Translation((0, PL["y0"], PL["z0"])) @ Matrix.Rotation(TILT, 4, "X")
@@ -98,8 +98,8 @@ def build_materials(colorway):
     M["silver"] = brushed(principled("Alu silver", (0.80, 0.80, 0.79), 1.0, 0.30))
     M["graphite"] = brushed(principled("Alu graphite", (0.13, 0.135, 0.145), 1.0, 0.33))
     M["copper"] = brushed(principled("Alu copper", (0.86, 0.42, 0.22), 1.0, 0.30))
-    M["leg_dark"] = principled("Legend dark", (0.05, 0.05, 0.055), 0.2, 0.55)
-    M["leg_light"] = principled("Legend light", (0.86, 0.86, 0.84), 0.0, 0.45)
+    M["leg_dark"] = principled("Legend dark", (0.012, 0.012, 0.014), 0.0, 0.6)
+    M["leg_light"] = principled("Legend light", (0.92, 0.92, 0.90), 0.0, 0.5)
     M["knob"] = brushed(principled("Alu knob", (0.78, 0.78, 0.77), 1.0, 0.22), 0.02)
     M["housing"] = principled("Switch housing", (0.02, 0.02, 0.022), 0.0, 0.35)
     M["stem"] = principled("Blue stem", (0.05, 0.25, 0.85), 0.0, 0.3)
@@ -254,8 +254,8 @@ def build_scene(M, explode=False, cable=False):
         instance(cap_src[u], f"cap_{lab}", mtx, mat)
         body = LEGEND.get(lab, lab)
         if body:
-            size = 4.2 if len(body) == 1 else (3.1 if len(body) <= 3 else 2.4)
-            tz = KC["height"] - KC["dish"] + 0.04
+            size = 5.2 if len(body) == 1 else (4.0 if len(body) <= 3 else 3.0)
+            tz = KC["height"] - KC["dish"] + 0.07
             text_obj(f"leg_{lab}", body, size, legm, E(g("caps")) @ L(k["x"], k["v"] + 0.3, KC["skirt_above_plate"] + tz))
         instance(sw_src, f"sw_{lab}", E(g("switch")) @ L(k["x"], k["v"], 0))
         instance(stem_src, f"stem_{lab}", E(g("switch")) @ L(k["x"], k["v"], 0))
