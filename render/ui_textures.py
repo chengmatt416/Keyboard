@@ -147,7 +147,7 @@ def side_screen(scale=4):
         on = i == 0
         d.rounded_rectangle([x0, 214 * s, x0 + 62 * s, 238 * s], radius=12 * s, fill=ACC if on else (30, 33, 35))
         d.text((x0 + 31 * s, 226 * s), lab, font=font(12 * s, "SemiBold"), fill=(20, 12, 8) if on else DIM, anchor="mm")
-    d.text((16 * s, 262 * s), "turn knob → switch target", font=font(11 * s, "Medium"), fill=(84, 90, 92), anchor="lm")
+    d.text((16 * s, 262 * s), "knob 1 → target   knob 2 → volume", font=font(11 * s, "Medium"), fill=(84, 90, 92), anchor="lm")
     return img
 
 

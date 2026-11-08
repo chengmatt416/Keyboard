@@ -132,6 +132,11 @@ def key_layout():
 
 
 KEYS = key_layout()
+MK = D["macro_keys"]
+MKEYS = [dict(label=lab, u=1, row=-1, x=MK["center"][0] + dx * P / 2, v=MK["center"][1] + dv * P / 2, rc=io)
+         for lab, io, (dx, dv) in zip(MK["labels"], MK["io"], ((-1, 1), (1, 1), (-1, -1), (1, -1)))]
+ALLKEYS = KEYS + MKEYS
+ENCS = ENC["centers"]
 
 
 def stab_offsets(u):
@@ -145,6 +150,8 @@ def stab_offsets(u):
 # --------------------------------------------------------------------------- top case
 OPEN = dict(x0=GX0 - K["opening_margin"], x1=GX0 + GRID_W + K["opening_margin"],
             v0=-K["opening_margin"], v1=GRID_V + K["opening_margin"])
+OPEN2 = dict(x0=MK["center"][0] - P - K["opening_margin"], x1=MK["center"][0] + P + K["opening_margin"],
+             v0=MK["center"][1] - P - K["opening_margin"], v1=MK["center"][1] + P + K["opening_margin"])
 
 
 def build_top_case():
@@ -168,15 +175,15 @@ def build_top_case():
     adds.append(deck)
     # key-opening lip and integrated plate
     lt = K["lip_t"]
-    ring = lbox(OPEN["x0"] - lt, OPEN["x1"] + lt, OPEN["v0"] - lt, OPEN["v1"] + lt, -SW["plate_total"], BEZ, K["opening_r"] + lt)
-    adds.append(ring)
+    for O in (OPEN, OPEN2):
+        adds.append(lbox(O["x0"] - lt, O["x1"] + lt, O["v0"] - lt, O["v1"] + lt, -SW["plate_total"], BEZ, K["opening_r"] + lt))
     # bosses for the bottom plate (M3 heat-set inserts)
     bd = SCR["boss_d"]
     for x, y in SCR["bottom_xy_world"]:
         adds.append(cq.Solid.makeCylinder(bd / 2, 80, cq.Vector(x, y, FLOOR)).intersect(below_w(BEZ - sk + 0.01)))
     for x, v in SCR["bottom_xv_local"]:
         y, _ = l2w(x, v, 0)[1:]
-        inside_grid = OPEN["x0"] < x < OPEN["x1"] and OPEN["v0"] < v < OPEN["v1"]
+        inside_grid = any(O["x0"] < x < O["x1"] and O["v0"] < v < O["v1"] for O in (OPEN, OPEN2))
         wtop = -SW["plate_total"] + 0.01 if inside_grid else BEZ - sk + 0.01
         if v > OPEN["v1"]:
             wtop = BEZ - dsk + 0.01
@@ -190,18 +197,19 @@ def build_top_case():
         adds.append(lbox_c(x, v, SCR["m2_boss_d"], SCR["m2_boss_d"], ret_top, BEZ - sk + 0.01, SCR["m2_boss_d"] / 2 - 0.01)
                     .intersect(footprint(0.5, -10, 80)))
     # stiffening ribs under the left control column and the front band
-    for v in (46.0, 57.0):
+    for v in (OPEN2["v0"] - lt - 1.5,):
         adds.append(lbox(F["wall"] - 0.5, OPEN["x0"] - lt + 0.5, v - 0.8, v + 0.8, BEZ - sk - 4, BEZ - sk + 0.01))
     body = body.fuse(*adds).clean()
 
-    plate = lbox(OPEN["x0"], OPEN["x1"], OPEN["v0"], OPEN["v1"], -SW["plate_total"], 0, K["opening_r"])
-    body = body.fuse(plate)
+    for O in (OPEN, OPEN2):
+        body = body.fuse(lbox(O["x0"], O["x1"], O["v0"], O["v1"], -SW["plate_total"], 0, K["opening_r"]))
 
     cuts = []
-    # key opening above the plate
-    cuts.append(lbox(OPEN["x0"], OPEN["x1"], OPEN["v0"], OPEN["v1"], 0, BEZ + 5, K["opening_r"]))
+    # key openings above the plates (main grid + 2x2 macro cluster)
+    for O in (OPEN, OPEN2):
+        cuts.append(lbox(O["x0"], O["x1"], O["v0"], O["v1"], 0, BEZ + 5, K["opening_r"]))
     # switch cut-outs (14.00) through the 1.5 mm skin and reliefs below it for the clips
-    for k in KEYS:
+    for k in ALLKEYS:
         c = SW["cutout"]
         cuts.append(lbox_c(k["x"], k["v"], c, c, -SW["plate_total"] - 1, 1, SW["cutout_r"]))
         cuts.append(lbox_c(k["x"], k["v"], SW["relief_x"], SW["relief_v"], -SW["plate_total"] - 1, -SW["plate_skin"], 0.8))
@@ -228,9 +236,9 @@ def build_top_case():
         rrect_wire(sx, sv + SS["active_offset_v"], aw + 2.0, ah + 2.0, SS["window_r"] + .8, BEZ + 0.001)], True))
     pw, ph, pt = SS["panel"]
     cuts += [win_lo, win_ch, lbox_c(sx, sv, pw + .4, ph + .4, BEZ - sk - 1, BEZ - SS["recess"], 1.0)]
-    # encoder hole
-    ex, ev = ENC["center"]
-    cuts.append(to_world(cq.Solid.makeCylinder(ENC["hole"] / 2, 20, cq.Vector(ex, ev, BEZ - 10))))
+    # encoder holes
+    for ex, ev in ENCS:
+        cuts.append(to_world(cq.Solid.makeCylinder(ENC["hole"] / 2, 20, cq.Vector(ex, ev, BEZ - 10))))
     # M3 insert holes (from below) / M2 pilot holes
     for x, y in SCR["bottom_xy_world"]:
         cuts.append(cq.Solid.makeCylinder(SCR["insert_hole"] / 2, SCR["insert_depth"] + 0.01, cq.Vector(x, y, FLOOR - 0.01)))
@@ -379,14 +387,15 @@ def build_cassette():
 
 
 def build_screen_retainer():
-    """Bar along the column that presses the 1.69" module PCB up against the skin."""
+    """Cross bar that presses the 1.69" module PCB up against the skin (bosses left/right of the PCB)."""
     sx, sv = SS["center"]
     mw, mh, mt = SS["module_pcb"]
     top = screen_retainer_top_w()
     (x0, v0), (x1, v1) = SCR["retainer_xv"]
-    bar = lbox(sx - 5, sx + 5, v0 - 3.5, v1 + 3.5, top - 2.0, top, 3.0)
+    bar = lbox(x0 - 3.0, x1 + 1.8, sv - 5, sv + 5, top - 2.0, top, 2.4)
     pads = [lbox_c(sx, sv + s * (mh / 2 - 4), mw - 4, 6, top - 2.0, top, 1.0) for s in (-1, 1)]
-    ret = bar.fuse(*pads)
+    spine = lbox_c(sx, sv, 8, mh - 2, top - 2.0, top, 1.5)
+    ret = bar.fuse(*pads, spine)
     for x, v in SCR["retainer_xv"]:
         ret = ret.cut(to_world(cq.Solid.makeCylinder(1.15, 10, cq.Vector(x, v, top - 5))))
     return ret.clean()
@@ -456,19 +465,19 @@ def env_stab(k):
 
 
 def env_encoder():
-    ex, ev = ENC["center"]
     bw, bh, bt = ENC["body"]
     top = BEZ - F["skin"]
-    body = lbox_c(ex, ev, bw, bh, top - bt, top - 0.6)
-    pins = lbox_c(ex, ev, bw, bh + 2, top - bt - ENC["pins"], top - bt)
-    bush = to_world(cq.Solid.makeCylinder(3.5, F["skin"] + 0.6 + 2.0, cq.Vector(ex, ev, top - 0.6)))
-    return fuse_all([body, pins, bush])
+    parts = []
+    for ex, ev in ENCS:
+        parts.append(lbox_c(ex, ev, bw, bh, top - bt, top - 0.6))
+        parts.append(lbox_c(ex, ev, bw, bh + 2, top - bt - ENC["pins"], top - bt))
+        parts.append(to_world(cq.Solid.makeCylinder(3.5, F["skin"] + 0.6 + 2.0, cq.Vector(ex, ev, top - 0.6))))
+    return fuse_all(parts)
 
 
 def env_knob():
-    ex, ev = ENC["center"]
     d, h = ENC["knob"]
-    return to_world(cq.Solid.makeCylinder(d / 2, h, cq.Vector(ex, ev, BEZ + 0.8)))
+    return fuse_all([to_world(cq.Solid.makeCylinder(d / 2, h, cq.Vector(ex, ev, BEZ + 0.8))) for ex, ev in ENCS])
 
 
 def env_screen():
@@ -529,15 +538,15 @@ def fit_checks(top, bottom, cassette, sled, retainer):
         rows.append((name, "PASS" if ok else f"FAIL ({v:.2f} mm³)", note))
 
     case = top.fuse(bottom)
-    sw_env = comp([env_switch_below(k) for k in KEYS])
-    cap_env = comp([env_keycap(k) for k in KEYS])
+    sw_env = comp([env_switch_below(k) for k in ALLKEYS])
+    cap_env = comp([env_keycap(k) for k in ALLKEYS])
     stab_env = comp([e for e in (env_stab(k) for k in KEYS) if e is not None])
-    chk("84 × MX switch housing + pins + 2 mm wiring vs case/plate", sw_env, case, "housing below plate 5.0, pins 3.3")
-    chk("84 × keycap (pressed → unpressed) vs bezel / lip", cap_env, top, f"keycap gap to opening wall ≥ {K['opening_margin'] + KC['gap'] / 2:.2f} mm")
+    chk("84 + 4 macro MX switches: housing + pins + 2 mm wiring vs case/plate", sw_env, case, "housing below plate 5.0, pins 3.3")
+    chk("88 keycaps (pressed → unpressed) vs bezel / lip", cap_env, top, f"keycap gap to opening wall ≥ {K['opening_margin'] + KC['gap'] / 2:.2f} mm")
     chk("4 stabiliser sets (housings + wire) vs case", stab_env, case)
     enc = env_encoder()
-    chk("EC11 body, pins and bushing vs case", enc, case)
-    chk("Knob vs case", env_knob(), top)
+    chk("2 × EC11 body, pins and bushing vs case", enc, case)
+    chk("2 knobs vs case", env_knob(), top)
     panel, pcb = env_screen()
     chk("1.69\" panel vs case", panel, top)
     chk("1.69\" module PCB vs case", pcb, top)
@@ -551,7 +560,10 @@ def fit_checks(top, bottom, cassette, sled, retainer):
     chk("ESP32-S3 board vs case", b_pcb.fuse(b_parts), case)
     chk("ESP32-S3 board vs sled", b_pcb.fuse(b_parts), sled)
     chk("ESP32-S3 board vs screen module", b_pcb.fuse(b_parts), pcb)
-    chk("ESP32-S3 board vs encoder", b_pcb.fuse(b_parts), enc)
+    chk("ESP32-S3 board vs encoders", b_pcb.fuse(b_parts), enc)
+    chk("Knobs vs macro keycaps", env_knob(), cap_env)
+    chk("Macro switch wiring vs encoders", sw_env, enc)
+    chk("Macro switch wiring vs screen module", sw_env, pcb)
     chk("ESP32-S3 board vs cassette", b_pcb.fuse(b_parts), cassette)
     chk("Sled vs case", sled, top)
     shell, over = env_usb_plug()
@@ -755,10 +767,10 @@ def main():
         m_pcb, m_parts = env_mcp_board()
         export_stl(m_pcb, rd / "mcp_pcb.stl")
         export_stl(m_parts, rd / "mcp_parts.stl")
-        for k in KEYS:
+        for k in ALLKEYS:
             s = stab_offsets(k["u"])
             k["stab"] = s
-        place = dict(tilt_deg=TILT, y0=Y0, z0=Z0, bezel=BEZ, keycap=KC, sw=SW, keys=KEYS,
+        place = dict(tilt_deg=TILT, y0=Y0, z0=Z0, bezel=BEZ, keycap=KC, sw=SW, keys=ALLKEYS,
                      touchbar=dict(center=[TB["center_x"], TB["center_v"]], glass=TB["glass"], active=TB["active"]),
                      screen=dict(center=SS["center"], panel=SS["panel"], active=SS["active"], recess=SS["recess"]),
                      encoder=ENC, usb=list(usb_center()), depth=DEP, width=W, floor=FLOOR, zb=ZB)
@@ -781,13 +793,15 @@ def main():
         # switches / keycaps / knob are added as shared instances so the STEP stays small
         sw = switch_solid()
         caps = {u: keycap_solid(u) for u in sorted({k["u"] for k in KEYS})}
-        for i, k in enumerate(KEYS):
+        for i, k in enumerate(ALLKEYS):
             asm.add(sw, name=f"switch_{i:02d}", color=cq.Color(0.2, 0.4, 0.8),
                     loc=cq.Location(cq.Vector(*l2w(k["x"], k["v"], 0)), cq.Vector(1, 0, 0), TILT))
             asm.add(caps[k["u"]], name=f"keycap_{i:02d}", color=col["part"],
                     loc=cq.Location(cq.Vector(*l2w(k["x"], k["v"], KC["skirt_above_plate"])), cq.Vector(1, 0, 0), TILT))
-        asm.add(knob_solid(), name="knob", color=col["part"],
-                loc=cq.Location(cq.Vector(*l2w(*ENC["center"], BEZ + 0.8)), cq.Vector(1, 0, 0), TILT))
+        kn = knob_solid()
+        for i, c in enumerate(ENCS):
+            asm.add(kn, name=f"knob_{i + 1}", color=col["part"],
+                    loc=cq.Location(cq.Vector(*l2w(*c, BEZ + 0.8)), cq.Vector(1, 0, 0), TILT))
         asm.save(str(OUT / "step" / "STRIP84_assembly.step"))
 
     print("done, fails =", fails)

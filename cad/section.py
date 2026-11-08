@@ -59,7 +59,7 @@ def main():
     shell, over = b.env_usb_plug()
     mcp, mcpp = b.env_mcp_board()
     sw = b.switch_solid()
-    keys = b.KEYS
+    keys = b.ALLKEYS
     sws = cq.Compound.makeCompound([b.to_world(sw.translate(cq.Vector(k["x"], k["v"], 0))) for k in keys])
     caps = cq.Compound.makeCompound([b.env_keycap(k) for k in keys])
     wiring = cq.Compound.makeCompound([b.env_switch_below(k) for k in keys])
@@ -74,9 +74,9 @@ def main():
     draw(axs[0], kx, common + [(wiring, C["wire"], 0.25), (sws, C["part"], 0.9), (caps, C["cap"], 0.55), (stabs, "#7b8a99", 0.9),
                                (mcp, C["pcb"], 0.9), (mcpp, "#666", 0.9)],
          f"Section A  x = {kx:.1f} mm (through the G column) — switches, keycaps (pressed↔unpressed envelope), 2 mm wiring zone, touch-bar stack")
-    draw(axs[1], 28.0, common + [(sled, "#4a4d52", 1), (bp, C["pcb"], 1), (bparts, "#888", 1), (ret, "#4a4d52", 1), (panel, C["glass"], 1),
+    draw(axs[1], 18.5, common + [(wiring, C["wire"], 0.25), (sws, C["part"], 0.9), (caps, C["cap"], 0.55), (sled, "#4a4d52", 1), (bp, C["pcb"], 1), (bparts, "#888", 1), (ret, "#4a4d52", 1), (panel, C["glass"], 1),
                                  (pcb, C["pcb"], 1), (enc, C["part"], 1), (knob, C["cap"], 0.8), (shell, C["usb"], 1), (over, "#222", 0.8)],
-         "Section B  x = 28 mm (left control column) — knob + EC11, 1.69\" screen + retainer, ESP32-S3 on sled, USB-C cable mated")
+         "Section B  x = 18.5 mm (left control column) — knob 1 + EC11, macro keys M1/M3, 1.69\" screen + retainer, ESP32-S3 on sled, USB-C mated")
     legend = [("printed case", C["case"]), ("printed inner parts", "#4a4d52"), ("switch / EC11", C["part"]), ("keycap envelope", C["cap"]),
               ("wiring allowance", C["wire"]), ("PCB / LCD", C["pcb"]), ("glass", C["glass"])]
     for i, (t, c) in enumerate(legend):

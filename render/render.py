@@ -27,7 +27,7 @@ BEZ = PL["bezel"]
 
 MODS = {"Esc", "Tab", "Caps", "Shift", "Ctrl", "Win", "Alt", "RAlt", "Fn", "RCtrl", "Backspace", "Enter", "RShift",
         "Del", "PgUp", "PgDn", "End", "Up", "Down", "Left", "Right", "PrtSc", "Ins", "Pause",
-        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"}
+        "M1", "M2", "M3", "M4", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12"}
 LEGEND = {"Esc": "esc", "Tab": "tab", "Caps": "caps", "Shift": "shift", "RShift": "shift", "Ctrl": "ctrl", "RCtrl": "ctrl",
           "Win": "win", "Alt": "alt", "RAlt": "alt", "Fn": "fn", "Backspace": "backspace", "Enter": "enter", "Del": "del",
           "PgUp": "pg up", "PgDn": "pg dn", "End": "end", "Up": "↑", "Down": "↓", "Left": "←", "Right": "→",
@@ -261,9 +261,14 @@ def build_scene(M, explode=False, cable=False):
         instance(stem_src, f"stem_{lab}", E(g("switch")) @ L(k["x"], k["v"], 0))
 
     # knob
-    ex_, ev_ = PL["encoder"]["center"]
-    kn = import_stl("knob", MESH / "knob.stl", M["knob"], 30)
-    kn.matrix_basis = E(g("knob")) @ L(ex_, ev_, BEZ + 0.8) @ Matrix.Rotation(math.radians(-28), 4, "Z")
+    kn = None
+    for i, (ex_, ev_) in enumerate(PL["encoder"]["centers"]):
+        if kn is None:
+            kn = import_stl("knob_1", MESH / "knob.stl", M["knob"], 30)
+            ob = kn
+        else:
+            ob = instance(kn, f"knob_{i + 1}", Matrix.Identity(4))
+        ob.matrix_basis = E(g("knob")) @ L(ex_, ev_, BEZ + 0.8) @ Matrix.Rotation(math.radians(-28 + 70 * i), 4, "Z")
 
     # touch bar glass with UI
     tb = PL["touchbar"]
@@ -411,7 +416,7 @@ VIEWS = {
     "top": dict(cam=dict(loc=(0.183, 0.0855, 1.2), target=(0.183, 0.0855, 0.0), ortho=0.405), res=(2400, 1320), expo=-0.15),
     "side": dict(cam=dict(loc=(0.183 + 1.0, 0.0855, 0.030), target=(0.183, 0.0855, 0.030), ortho=0.205), res=(2400, 820), expo=0.45),
     "rear": dict(cam=dict(loc=(-0.13, 0.171 + 0.29, 0.095), target=(0.075, 0.150, 0.012), lens=70, fstop=9), res=(2400, 1500), expo=0.1),
-    "detail": dict(cam=dict(loc=(0.028 + 0.14, 0.11 - 0.17, 0.165), target=(0.040, 0.118, 0.022), lens=85, fstop=8), res=(2400, 1600), expo=0.1),
+    "detail": dict(cam=dict(loc=(0.036 - 0.07, 0.072 - 0.215, 0.235), target=(0.040, 0.074, 0.018), lens=72, fstop=11), res=(2400, 1600), expo=0.1),
     "exploded": dict(cam=dict(loc=(0.183 - 0.42, 0.0855 - 0.62, 0.48), target=(0.183, 0.090, 0.018), lens=55, fstop=32), res=(2400, 1800), expo=0.05),
 }
 

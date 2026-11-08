@@ -118,12 +118,25 @@
   },
 
   "encoder": {
-    "_src": "Alps EC11 family: 7 mm M7x0.75 bushing, ~12 x 12 body. Use 20 mm shaft, D or knurled.",
+    "_src": "Alps EC11 family: 7 mm M7x0.75 bushing, ~12 x 12 body. Use 20 mm shaft, D or knurled. Two encoders side by side at the front of the control column.",
     "hole": 7.4,
     "body": [12.4, 13.4, 6.5],
     "pins": 5.0,
-    "center": [28.0, 34.0],
-    "knob": [24.0, 11.0]
+    "centers": [[17.5, 13.0], [38.5, 13.0]],
+    "knob": [18.0, 11.0]
+  },
+
+  "macro_keys": {
+    "_note": "2 x 2 MX switches (same blue switches, 1u keycaps) in the control column, own opening and integrated plate. Wired straight to MCP23017 #1, no diodes.",
+    "center": [28.0, 47.625],
+    "labels": ["M1", "M2", "M3", "M4"],
+    "io": ["MCP1 GPA4", "MCP1 GPA5", "MCP1 GPA6", "MCP1 GPA7"]
+  },
+
+  "io_added_v04": {
+    "EC11 #2 A / B": "GPIO1 / GPIO2",
+    "EC11 #2 push": "MCP1 GPB0",
+    "M1..M4": "MCP1 GPA4..GPA7 (internal pull-ups, active low)"
   },
 
   "mcu_board": {
@@ -152,10 +165,10 @@
     "m2_pilot": 1.7,
     "m2_boss_d": 5.0,
     "bottom_xy_world": [[40,6.3],[120,6.3],[183,6.3],[246,6.3],[326,6.3]],
-    "bottom_xv_local": [[80,121.0],[183,121.0],[286,121.0],[12,62.0],[44,10.0],[82.8,47.625],[159,9.525],[209,9.525],[316.1,28.575]],
+    "bottom_xv_local": [[80,121.0],[183,121.0],[286,121.0],[6.0,24.0],[6.0,70.5],[28.0,13.0],[82.8,47.625],[159,9.525],[209,9.525],[316.1,28.575]],
     "cassette_front_xv": [[30,121.0],[131,121.0],[235,121.0],[336,121.0]],
     "cassette_rear_xv": [[40,155.2],[183,155.2],[326,155.2]],
-    "retainer_xv": [[28.0,66.0],[28.0,116.0]]
+    "retainer_xv": [[7.0,91.0],[47.5,91.0]]
   },
 
   "feet": {"d": 13.0, "recess": 1.5, "xy": [[22,18],[344,18],[22,153],[344,153]], "_part": "12.7 x 3.5 mm 3M Bumpon or similar, 1.5 mm proud"},
